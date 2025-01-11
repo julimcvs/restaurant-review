@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: restaurant-review
+  datasource:
+    password: r3s4ur4ntr3v13w
+    url: jdbc:postgresql://localhost:5432/restaurant-review
+    username: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+app:
+  allowed:
+    origin: http://localhost:4200
