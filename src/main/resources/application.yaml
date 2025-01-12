@@ -9,6 +9,7 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
 app:
   allowed:
     origin: http://localhost:4200

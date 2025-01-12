@@ -13,20 +13,20 @@ import org.springframework.stereotype.Repository;
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     @Query("""
-                    SELECT new com.julio.restaurant_review.model.dto.PaginatedRestaurantDTO(
-                        restaurant.id,
-                        restaurant.name,
-                        AVG(reviews.rating),
-                        COUNT(reviews.id)
-                    )
-                    FROM Restaurant restaurant
-                    INNER JOIN restaurant.reviews reviews ON restaurant.id = reviews.restaurant.id
-                    INNER JOIN restaurant.address address
-                    WHERE (LOWER(restaurant.name) LIKE LOWER(CONCAT('%', :name, '%')) OR :name IS NULL)
-                      AND (LOWER(address.city) = LOWER(:city) OR :city IS NULL)
-                      AND (LOWER(address.neighborhood) = LOWER(:neighborhood) OR :neighborhood IS NULL)
-                    GROUP BY restaurant.id
-            """)
+       SELECT new com.julio.restaurant_review.model.dto.PaginatedRestaurantDTO(
+           restaurant.id,
+           restaurant.name,
+           AVG(reviews.rating),
+           COUNT(reviews.id)
+       )
+       FROM Restaurant restaurant
+       LEFT JOIN restaurant.reviews reviews
+       INNER JOIN restaurant.address address
+       WHERE (LOWER(restaurant.name) LIKE LOWER(CONCAT('%', :name, '%')) OR :name IS NULL)
+         AND (LOWER(address.city) = LOWER(:city) OR :city IS NULL)
+         AND (LOWER(address.neighborhood) = LOWER(:neighborhood) OR :neighborhood IS NULL)
+       GROUP BY restaurant.id
+       """)
     Page<PaginatedRestaurantDTO> findAllPaginated(
             @Param("name") String name,
             @Param("city") String city,

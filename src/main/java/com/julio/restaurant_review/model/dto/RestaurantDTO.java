@@ -15,6 +15,14 @@ public record RestaurantDTO(
         @Length(min = 3, max = 100)
         String name,
 
+        @Length(max = 500)
+        String description,
+
+        @NotNull
+        @Min(1)
+        @Max(99999)
+        Long categoryId,
+
         @NotNull
         AddressDTO address
 ) {

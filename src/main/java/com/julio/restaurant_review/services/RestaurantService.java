@@ -16,9 +16,11 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class RestaurantService {
     private final RestaurantRepository repository;
+    private final CategoryService categoryService;
 
-    public RestaurantService(RestaurantRepository repository) {
+    public RestaurantService(RestaurantRepository repository, CategoryService categoryService) {
         this.repository = repository;
+        this.categoryService = categoryService;
     }
 
     public Restaurant findById(Long id) {
@@ -37,15 +39,16 @@ public class RestaurantService {
     }
 
     public Restaurant save(RestaurantDTO input) {
-        Restaurant restaurant = new Restaurant();
+        var restaurant = Restaurant.fromDTO(input);
         if (input.id() != null) {
             restaurant = repository
                     .findById(input.id())
                     .orElseThrow(() -> new NotFoundException("Restaurant not found"));
         }
-        restaurant.setName(input.name());
-        Address address = Address.fromDTO(input.address());
+        var address = Address.fromDTO(input.address());
         restaurant.setAddress(address);
+        var category = categoryService.findById(input.categoryId());
+        restaurant.setCategory(category);
         return repository.save(restaurant);
     }
 }
