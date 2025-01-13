@@ -50,6 +50,10 @@ public class FileStorageService {
         }
     }
 
+    public Path loadFilePath(String filename) {
+        return root.resolve(filename);
+    }
+
     public Stream<Path> loadAll(Set<String> filenames) {
         try {
             return Files.list(this.root)

@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name="review")
+@Table(name = "review")
 public class Review implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -22,7 +22,7 @@ public class ReviewService {
         var review = new Review();
         review.setMessage(input.message());
         review.setRating(input.rating());
-        var restaurant = this.restaurantService.findById(input.restaurantId());
+        var restaurant = this.restaurantService.findEntityById(input.restaurantId());
         review.setRestaurant(restaurant);
         return repository.save(review);
     }

@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -39,10 +38,10 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     );
 
     @Query("""
-        SELECT i
-        FROM Restaurant restaurant
-        LEFT JOIN restaurant.images i
-        WHERE restaurant.id IN :restaurantIds
-        """)
-    List<Image> findImageFilenamesByRestaurantIds(@Param("restaurantIds") List<Long> restaurantIds);
+                SELECT i
+                FROM Restaurant restaurant
+                LEFT JOIN restaurant.images i
+                WHERE restaurant.id = :restaurantId
+            """)
+    Set<Image> findImagesByRestaurantId(@Param("restaurantId") Long restaurantId);
 }

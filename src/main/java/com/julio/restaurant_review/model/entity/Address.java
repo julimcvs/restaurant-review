@@ -44,6 +44,18 @@ public class Address implements Serializable {
         return address;
     }
 
+    public static AddressDTO toDTO(Address address) {
+        return new AddressDTO(
+                address.getCity(),
+                address.getStreet(),
+                address.getNeighborhood(),
+                address.getNumber(),
+                address.getZipCode(),
+                address.getState(),
+                address.getCountry()
+        );
+    }
+
     public Long getId() {
         return id;
     }

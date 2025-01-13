@@ -4,10 +4,11 @@ import com.julio.restaurant_review.controllers.FilesController;
 import com.julio.restaurant_review.exceptions.BadRequestException;
 import com.julio.restaurant_review.exceptions.NotFoundException;
 import com.julio.restaurant_review.model.dto.FilterRestaurantDTO;
+import com.julio.restaurant_review.model.dto.RestaurantDetailsDTO;
 import com.julio.restaurant_review.model.dto.ImageInfoDTO;
-import com.julio.restaurant_review.model.dto.PaginatedRestaurantQueryDTO;
 import com.julio.restaurant_review.model.dto.PaginatedRestaurantResponseDTO;
 import com.julio.restaurant_review.model.dto.RestaurantDTO;
+import com.julio.restaurant_review.model.dto.ReviewDetailDTO;
 import com.julio.restaurant_review.model.entity.Address;
 import com.julio.restaurant_review.model.entity.Image;
 import com.julio.restaurant_review.model.entity.Restaurant;
@@ -19,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,7 +39,31 @@ public class RestaurantService {
         this.storageService = storageService;
     }
 
-    public Restaurant findById(Long id) {
+    private static ImageInfoDTO getImageInfoDTO(Path path) {
+        String filename = path.getFileName().toString();
+        String url = MvcUriComponentsBuilder
+                .fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build().toString();
+        return new ImageInfoDTO(filename, url);
+    }
+
+    public RestaurantDetailsDTO findById(Long id) {
+        var restaurant = findEntityById(id);
+        var imagesInfo = getImagesInfoByFilenames(restaurant.getImages().stream().map(Image::getFilename).collect(Collectors.toSet()));
+        var reviews = restaurant.getReviews()
+                .stream()
+                .map(review -> new ReviewDetailDTO(review.getId(), review.getMessage(), review.getRating()))
+                .collect(Collectors.toSet());
+        return new RestaurantDetailsDTO(
+                restaurant.getId(),
+                restaurant.getName(),
+                restaurant.getDescription(),
+                Address.toDTO(restaurant.getAddress()),
+                reviews,
+                imagesInfo
+        );
+    }
+
+    public Restaurant findEntityById(Long id) {
         return repository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Restaurant not found"));
@@ -49,20 +76,18 @@ public class RestaurantService {
                 filter.neighborhood(),
                 pageable
         );
-        var images = repository.findImageFilenamesByRestaurantIds(output.get().map(PaginatedRestaurantQueryDTO::getId).toList());
         return output.map(restaurant -> {
-            var restaurantImages = images
+            var image = repository.findImagesByRestaurantId(restaurant.getId())
                     .stream()
-                    .filter(image -> image.getRestaurants().stream().anyMatch(r -> r.getId().equals(restaurant.getId())))
-                    .map(Image::getFilename)
-                    .collect(Collectors.toSet());
-            var imagesInfo = getImagesInfoByFilenames(restaurantImages);
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException("No images were found for restaurant " + restaurant.getName()));
+            var imageInfo = getImageInfoByFilename(image.getFilename());
             return new PaginatedRestaurantResponseDTO(
                     restaurant.getId(),
                     restaurant.getName(),
                     restaurant.getAverageRating(),
                     restaurant.getTotalReviews(),
-                    imagesInfo
+                    imageInfo
             );
         });
     }
@@ -85,12 +110,15 @@ public class RestaurantService {
     private Set<ImageInfoDTO> getImagesInfoByFilenames(Set<String> filenames) {
         return storageService
                 .loadAll(filenames)
-                .map(path -> {
-                    String filename = path.getFileName().toString();
-                    String url = MvcUriComponentsBuilder
-                            .fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build().toString();
-                    return new ImageInfoDTO(filename, url);
-                }).collect(Collectors.toSet());
+                .map(path -> getImageInfoDTO(path))
+                .collect(Collectors.toSet());
+    }
+
+    private ImageInfoDTO getImageInfoByFilename(String filename) {
+        return Optional.of(storageService
+                        .loadFilePath(filename))
+                .map(path -> getImageInfoDTO(path))
+                .orElseThrow(() -> new NotFoundException("Image not found"));
     }
 
     private void saveImages(MultipartFile[] images, Restaurant restaurant) {
