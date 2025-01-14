@@ -13,7 +13,7 @@ public record ReviewDTO(
         Long restaurantId,
 
         @NotBlank
-        @Length(min = 3, max = 100)
+        @Length(min = 3, max = 500)
         String message,
 
         @NotNull
