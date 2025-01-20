@@ -3,6 +3,7 @@ package com.julio.restaurant_review.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.julio.restaurant_review.model.dto.FilterRestaurantDTO;
+import com.julio.restaurant_review.model.dto.PaginationRequestDTO;
 import com.julio.restaurant_review.model.dto.RestaurantDetailsDTO;
 import com.julio.restaurant_review.model.dto.PaginatedRestaurantResponseDTO;
 import com.julio.restaurant_review.model.dto.RestaurantDTO;
@@ -17,11 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,13 +44,10 @@ public class RestaurantController {
     }
 
     @PostMapping("/paginated")
-    public ResponseEntity<Page<PaginatedRestaurantResponseDTO>> findAllPaginated(@RequestParam(name = "page", defaultValue = "0") Integer page,
-                                                                                 @RequestParam(name = "size", defaultValue = "10") Integer size,
-                                                                                 @RequestParam(name = "sort", defaultValue = "id") String sortParam,
-                                                                                 @RequestParam(name = "direction", defaultValue = "ASC") String direction,
+    public ResponseEntity<Page<PaginatedRestaurantResponseDTO>> findAllPaginated(@ModelAttribute PaginationRequestDTO paginationRequest,
                                                                                  @RequestBody @Valid FilterRestaurantDTO filter) {
-        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortParam);
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Sort sort = Sort.by(Sort.Direction.fromString(paginationRequest.direction()), paginationRequest.sort());
+        Pageable pageable = PageRequest.of(paginationRequest.page(), paginationRequest.size(), sort);
         return ResponseEntity.ok(service.findAllPaginated(filter, pageable));
     }
 

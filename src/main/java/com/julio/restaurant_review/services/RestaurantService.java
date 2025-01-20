@@ -49,16 +49,11 @@ public class RestaurantService {
     public RestaurantDetailsDTO findById(Long id) {
         var restaurant = findEntityById(id);
         var imagesInfo = getImagesInfoByFilenames(restaurant.getImages().stream().map(Image::getFilename).collect(Collectors.toSet()));
-        var reviews = restaurant.getReviews()
-                .stream()
-                .map(review -> new ReviewDetailDTO(review.getId(), review.getMessage(), review.getRating()))
-                .collect(Collectors.toSet());
         return new RestaurantDetailsDTO(
                 restaurant.getId(),
                 restaurant.getName(),
                 restaurant.getDescription(),
                 Address.toDTO(restaurant.getAddress()),
-                reviews,
                 imagesInfo
         );
     }

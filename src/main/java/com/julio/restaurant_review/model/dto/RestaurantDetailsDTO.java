@@ -7,15 +7,13 @@ public class RestaurantDetailsDTO {
     private final String name;
     private final String description;
     private final AddressDTO address;
-    private final Set<ReviewDetailDTO> ratings;
     private final Set<ImageInfoDTO> images;
 
-    public RestaurantDetailsDTO(Long id, String name, String description, AddressDTO address, Set<ReviewDetailDTO> ratings, Set<ImageInfoDTO> images) {
+    public RestaurantDetailsDTO(Long id, String name, String description, AddressDTO address, Set<ImageInfoDTO> images) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.address = address;
-        this.ratings = ratings;
         this.images = images;
     }
 
@@ -33,10 +31,6 @@ public class RestaurantDetailsDTO {
 
     public AddressDTO getAddress() {
         return address;
-    }
-
-    public Set<ReviewDetailDTO> getRatings() {
-        return ratings;
     }
 
     public Set<ImageInfoDTO> getImages() {
