@@ -38,6 +38,6 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity<Review> save(@RequestBody @Valid ReviewDTO input) {
-        return new ResponseEntity<>(service.save(input), HttpStatus.CREATED);
+        return new ResponseEntity(service.save(input), HttpStatus.CREATED);
     }
 }

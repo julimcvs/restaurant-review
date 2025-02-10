@@ -15,6 +15,27 @@ spring:
       max-file-size: 10MB
       max-request-size: 100MB
       enabled: true
+
 app:
   allowed:
     origin: http://localhost:4200
+rabbit:
+  exchanges:
+    - reservation.events
+    - vacancy.events
+  queues:
+    - name: restaurant.notification
+    - name: vacancy.queue
+  bindings:
+    - queue: restaurant.notification
+      exchange: reservation.events
+      routingKey: reservation.canceled
+    - queue: restaurant.notification
+      exchange: reservation.events
+      routingKey: reservation.confirmed
+    - queue: restaurant.notification
+      exchange: reservation.events
+      routingKey: reservation.created
+    - queue: vacancy.queue
+      exchange: vacancy.events
+      routingKey: vacancy.generate

@@ -4,16 +4,20 @@ import com.julio.restaurant_review.controllers.FilesController;
 import com.julio.restaurant_review.exceptions.BadRequestException;
 import com.julio.restaurant_review.exceptions.NotFoundException;
 import com.julio.restaurant_review.model.dto.FilterRestaurantDTO;
+import com.julio.restaurant_review.model.dto.FindVacanciesRequestDTO;
 import com.julio.restaurant_review.model.dto.RestaurantDetailsDTO;
 import com.julio.restaurant_review.model.dto.ImageInfoDTO;
 import com.julio.restaurant_review.model.dto.PaginatedRestaurantResponseDTO;
 import com.julio.restaurant_review.model.dto.RestaurantDTO;
-import com.julio.restaurant_review.model.dto.ReviewDetailDTO;
+import com.julio.restaurant_review.model.dto.RestaurantSettingsDTO;
+import com.julio.restaurant_review.model.dto.VacancyDTO;
 import com.julio.restaurant_review.model.entity.Address;
 import com.julio.restaurant_review.model.entity.Image;
 import com.julio.restaurant_review.model.entity.Restaurant;
+import com.julio.restaurant_review.model.enums.VacancyStatusEnum;
 import com.julio.restaurant_review.repositories.RestaurantRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,7 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,11 +39,18 @@ public class RestaurantService {
     private final RestaurantRepository repository;
     private final CategoryService categoryService;
     private final FileStorageService storageService;
+    private final VacancyService vacancyService;
 
-    public RestaurantService(RestaurantRepository repository, CategoryService categoryService, FileStorageService storageService) {
+    public RestaurantService(
+            RestaurantRepository repository,
+            CategoryService categoryService,
+            FileStorageService storageService,
+            @Lazy VacancyService vacancyService
+    ) {
         this.repository = repository;
         this.categoryService = categoryService;
         this.storageService = storageService;
+        this.vacancyService = vacancyService;
     }
 
     private static ImageInfoDTO getImageInfoDTO(Path path) {
@@ -44,6 +58,10 @@ public class RestaurantService {
         String url = MvcUriComponentsBuilder
                 .fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build().toString();
         return new ImageInfoDTO(filename, url);
+    }
+
+    public List<Restaurant> findAll() {
+        return repository.findAll();
     }
 
     public RestaurantDetailsDTO findById(Long id) {
@@ -134,5 +152,26 @@ public class RestaurantService {
                 .map(file -> new Image(file.getOriginalFilename()))
                 .collect(Collectors.toSet());
         restaurant.setImages(imageEntities);
+    }
+
+    public RestaurantSettingsDTO getSettingsById(Long id) {
+        findEntityById(id);
+        var availableDates = vacancyService.findDatesByRestaurantId(id);
+        // TODO Quantidade de pessoas por mesa deve ser configurável por restaurante
+        Integer[] tableSettings = {2, 4, 6, 8};
+        return new RestaurantSettingsDTO(
+                availableDates.stream()
+                        .map(DateTimeFormatter.ofPattern("dd/MM/yyyy")::format)
+                        .collect(Collectors.toCollection(LinkedHashSet::new)),
+                tableSettings);
+    }
+
+    public Set<VacancyDTO> findVacanciesById(Long id, FindVacanciesRequestDTO query) {
+        var vacancies = vacancyService.findByRestaurantId(id, query, VacancyStatusEnum.AVAILABLE);
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        return vacancies
+                .stream()
+                .map(vacancy -> new VacancyDTO(vacancy.getId(), vacancy.getTimeSlotStart().format(timeFormatter)))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

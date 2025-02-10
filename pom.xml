@@ -72,6 +72,12 @@
 			<artifactId>spring-websocket</artifactId>
 			<version>6.2.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.amqp</groupId>
+			<artifactId>spring-rabbit</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

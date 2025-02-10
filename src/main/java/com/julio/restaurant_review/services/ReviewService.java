@@ -1,6 +1,6 @@
 package com.julio.restaurant_review.services;
 
-import com.julio.restaurant_review.model.dto.PaginatedRestaurantResponseDTO;
+import com.julio.restaurant_review.exceptions.BadRequestException;
 import com.julio.restaurant_review.model.dto.ReviewDTO;
 import com.julio.restaurant_review.model.dto.ReviewDetailDTO;
 import com.julio.restaurant_review.model.entity.Review;

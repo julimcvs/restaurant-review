@@ -13,3 +13,9 @@ services:
     command: redis-server
     ports:
       - 6379:6379
+
+  restaurant-review-rabbitmq:
+    image: "rabbitmq:4.0.5-management"
+    ports:
+      - 5672:5672
+      - 15672:15672
