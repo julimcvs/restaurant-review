@@ -6,6 +6,8 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -15,6 +17,8 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 @EnableRabbit
 @EnableScheduling
+@EnableCaching
+@EnableJpaAuditing
 public class RestaurantReviewApplication implements CommandLineRunner {
 
 	@Resource

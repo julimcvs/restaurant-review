@@ -4,10 +4,15 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
+public record TableSettingDTO(
+        @NotNull
+        @Min(1)
+        @Max(20)
+        Integer tableFor,
 
-public record FindVacanciesRequestDTO(
-        @NotNull @Min(0) @Max(100) Integer tableFor,
-        @NotNull LocalDate date
+        @NotNull
+        @Min(1)
+        @Max(100)
+        Integer vacancyAmount
 ) {
 }

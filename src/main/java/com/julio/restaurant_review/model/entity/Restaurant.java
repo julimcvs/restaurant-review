@@ -14,14 +14,17 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
 @Entity
 @Table(name = "restaurant")
 public class Restaurant implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -32,6 +35,11 @@ public class Restaurant implements Serializable {
 
     @Column(length = 500)
     private String description;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "configuration_id", referencedColumnName = "id")
+    private RestaurantConfiguration configuration;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -121,5 +129,13 @@ public class Restaurant implements Serializable {
 
     public void setImages(Set<Image> images) {
         this.images = images;
+    }
+
+    public RestaurantConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(RestaurantConfiguration configuration) {
+        this.configuration = configuration;
     }
 }
