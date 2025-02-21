@@ -2,6 +2,7 @@ package com.julio.restaurant_review.services;
 
 import com.julio.restaurant_review.exceptions.NotFoundException;
 import com.julio.restaurant_review.model.dto.CategoryListDTO;
+import com.julio.restaurant_review.model.dto.CreateCategoryDTO;
 import com.julio.restaurant_review.model.entity.Category;
 import com.julio.restaurant_review.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,10 @@ public class CategoryService {
         return repository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Category not found"));
+    }
+
+    public Category save(CreateCategoryDTO input) {
+        var output = new Category(input.name().trim());
+        return repository.save(output);
     }
 }

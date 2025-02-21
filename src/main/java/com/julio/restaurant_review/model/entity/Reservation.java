@@ -12,6 +12,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -25,6 +28,9 @@ import static jakarta.persistence.TemporalType.TIMESTAMP;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name="reservation")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Reservation implements Serializable {
     @Serial
     public static final long serialVersionUID = 1L;
@@ -56,60 +62,4 @@ public class Reservation implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", referencedColumnName = "id")
     private Restaurant restaurant;
-
-    public Integer getTableFor() {
-        return tableFor;
-    }
-
-    public void setTableFor(Integer tableFor) {
-        this.tableFor = tableFor;
-    }
-
-    public LocalDateTime getScheduledDate() {
-        return scheduledDate;
-    }
-
-    public void setScheduledDate(LocalDateTime scheduled_date) {
-        this.scheduledDate = scheduled_date;
-    }
-
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
-
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public ReservationStatusEnum getStatus() {
-        return status;
-    }
-
-    public void setStatus(ReservationStatusEnum status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

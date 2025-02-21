@@ -16,6 +16,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -23,6 +26,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "restaurant")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Restaurant implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -64,78 +70,11 @@ public class Restaurant implements Serializable {
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     private Set<Review> reviews;
 
-    public Restaurant() {
-    }
-
     public static Restaurant fromDTO(RestaurantDTO input) {
         var output = new Restaurant();
         output.setId(input.id());
         output.setName(input.name());
         output.setDescription(input.description());
         return output;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Set<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(Set<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    public Set<Image> getImages() {
-        return images;
-    }
-
-    public void setImages(Set<Image> images) {
-        this.images = images;
-    }
-
-    public RestaurantConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(RestaurantConfiguration configuration) {
-        this.configuration = configuration;
     }
 }

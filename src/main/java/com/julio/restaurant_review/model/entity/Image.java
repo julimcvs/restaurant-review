@@ -8,6 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -15,6 +18,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "image")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Image implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -29,34 +35,7 @@ public class Image implements Serializable {
     @ManyToMany(mappedBy = "images", fetch = FetchType.LAZY)
     private Set<Restaurant> restaurants;
 
-    public Image() {
-    }
-
     public Image(String filename) {
         this.filename = filename;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public Set<Restaurant> getRestaurants() {
-        return restaurants;
-    }
-
-    public void setRestaurants(Set<Restaurant> restaurants) {
-        this.restaurants = restaurants;
     }
 }

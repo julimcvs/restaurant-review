@@ -11,6 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -19,6 +22,9 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "restaurant_configuration")
+@Getter
+@Setter
+@NoArgsConstructor
 public class RestaurantConfiguration implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -48,37 +54,5 @@ public class RestaurantConfiguration implements Serializable {
                 input.schedules().stream().map(schedule -> RestaurantSchedule.fromDTO(schedule, output)).collect(Collectors.toSet())
         );
         return output;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getVacancyInterval() {
-        return vacancyInterval;
-    }
-
-    public void setVacancyInterval(Integer vacancyInterval) {
-        this.vacancyInterval = vacancyInterval;
-    }
-
-    public Set<TableSetting> getTableSettings() {
-        return tableSettings;
-    }
-
-    public void setTableSettings(Set<TableSetting> tableSettings) {
-        this.tableSettings = tableSettings;
-    }
-
-    public Set<RestaurantSchedule> getSchedules() {
-        return schedules;
-    }
-
-    public void setSchedules(Set<RestaurantSchedule> schedules) {
-        this.schedules = schedules;
     }
 }

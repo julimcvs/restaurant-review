@@ -6,17 +6,15 @@ import com.julio.restaurant_review.model.dto.FilterRestaurantDTO;
 import com.julio.restaurant_review.model.dto.FindVacanciesRequestDTO;
 import com.julio.restaurant_review.model.dto.FindVacanciesResponseDTO;
 import com.julio.restaurant_review.model.dto.PaginatedRestaurantResponseDTO;
-import com.julio.restaurant_review.model.dto.PaginationRequestDTO;
 import com.julio.restaurant_review.model.dto.RestaurantConfigurationDTO;
 import com.julio.restaurant_review.model.dto.RestaurantDTO;
 import com.julio.restaurant_review.model.dto.RestaurantDetailsDTO;
 import com.julio.restaurant_review.model.entity.Restaurant;
 import com.julio.restaurant_review.services.RestaurantService;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -53,10 +51,8 @@ public class RestaurantController {
     }
 
     @PostMapping("/paginated")
-    public ResponseEntity<Page<PaginatedRestaurantResponseDTO>> findAllPaginated(@ModelAttribute PaginationRequestDTO paginationRequest,
+    public ResponseEntity<Page<PaginatedRestaurantResponseDTO>> findAllPaginated(@ParameterObject Pageable pageable,
                                                                                  @RequestBody @Valid FilterRestaurantDTO filter) {
-        Sort sort = Sort.by(Sort.Direction.fromString(paginationRequest.direction()), paginationRequest.sort());
-        Pageable pageable = PageRequest.of(paginationRequest.page(), paginationRequest.size(), sort);
         return ResponseEntity.ok(service.findAllPaginated(filter, pageable));
     }
 

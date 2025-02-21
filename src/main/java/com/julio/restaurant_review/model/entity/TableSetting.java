@@ -10,12 +10,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "table_setting")
+@Getter
+@Setter
+@NoArgsConstructor
 public class TableSetting implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -40,37 +46,5 @@ public class TableSetting implements Serializable {
         output.setVacancyAmount(input.vacancyAmount());
         output.setConfiguration(configuration);
         return output;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getTableFor() {
-        return tableFor;
-    }
-
-    public void setTableFor(Integer tableFor) {
-        this.tableFor = tableFor;
-    }
-
-    public Integer getVacancyAmount() {
-        return vacancyAmount;
-    }
-
-    public void setVacancyAmount(Integer vacancyAmount) {
-        this.vacancyAmount = vacancyAmount;
-    }
-
-    public RestaurantConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    public void setConfiguration(RestaurantConfiguration configuration) {
-        this.configuration = configuration;
     }
 }
