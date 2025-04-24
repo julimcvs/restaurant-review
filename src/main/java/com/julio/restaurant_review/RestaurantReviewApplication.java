@@ -1,6 +1,6 @@
 package com.julio.restaurant_review;
 
-import com.julio.restaurant_review.services.FileStorageService;
+import com.julio.restaurant_review.adapter.out.storage.FileSystemStorageAdapter;
 import jakarta.annotation.Resource;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.CommandLineRunner;
@@ -22,7 +22,7 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 public class RestaurantReviewApplication implements CommandLineRunner {
 
 	@Resource
-	FileStorageService storageService;
+	FileSystemStorageAdapter storageService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(RestaurantReviewApplication.class, args);
