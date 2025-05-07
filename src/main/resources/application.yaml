@@ -24,6 +24,9 @@ spring:
 app:
   allowed:
     origin: http://localhost:4200
+jwt:
+  secret: r35t4ur4ntr3v13w
+  issuer: restaurant-review
 rabbit:
   exchanges:
     - reservation.events
